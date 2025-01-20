@@ -3,7 +3,13 @@
 Archlinux container file for building OpenWrt in a container.
 Associated write-up can be [found here](https://www.archcloudlabs.com/projects/building-a-router-pt-2/).
 
-Separating `.configs` from the container itself, allow the dependencies to be packaged in one container and multiple configs to be on the underlying host filesystem for testing/parallel building in a distributed environment.
+Separating OpenWrt `.configs` from the container itself, allow the dependencies to be packaged in one container and multiple configs to be on the underlying host filesystem for testing/parallel building in a distributed environment. For example, one could have the following host file structure to be mounted in `/opt/` of the container at runtime for OpenWrt builds.
+
+```bash
+openwrt-rpi4
+openwrt-x86_64
+openwrt-...
+```
 
 ## Building
 
@@ -15,13 +21,7 @@ $> podman build . -t acl:openwrt
 ## Running - Interactive
 
 ```
-[dllcoolj@thonkpad ACL-OpenWrt]$ podman run -ti acl:openwrt /bin/bash
-/bin/bash: /bin/bash: cannot execute binary file
-[dllcoolj@thonkpad ACL-OpenWrt]$ podman run -ti acl:openwrt 
-[root@60c25ad3418a opt]# id
-uid=0(root) gid=0(root) groups=0(root)
-[root@60c25ad3418a opt]# ps
-    PID TTY          TIME CMD
-      1 pts/0    00:00:00 bash
-      3 pts/0    00:00:00 ps
+[dllcoolj@thonkpad ACL-OpenWrt]$ podman run -v `pwd`:/opt/ -ti acl:openwrt 
+[root@2bbff73cbb71 opt]# ls
+Containerfile  README.md  openwrt-rpi4	openwrt-x86_64
 ```
